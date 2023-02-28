@@ -55,6 +55,7 @@ mymod/tra_ee/ukrainian/*-win32.tra      working-tree-encoding=cp866
 ```
 
 After the file is created, tell git to re-read existing files:
+
 ```bash
 git add --renormalize .
 git commit -m "renormalize tras"
