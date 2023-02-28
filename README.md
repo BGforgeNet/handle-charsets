@@ -68,7 +68,7 @@ ALWAYS
     OUTER_SPRINT components ~%MOD_FOLDER%/components~
 
     /* If it's an EE game, use converted utf-8 translations from out_path. */
-    ACTION_IF GAME_IS ~bgee, bg2ee, eet, iwdee, pstee~ BEGIN
+    ACTION_IF GAME_IS ~bgee bg2ee eet iwdee pstee~ BEGIN
         OUTER_SPRINT lang_dir ~%MOD_FOLDER%/tra_ee/%LANGUAGE%~
     END ELSE BEGIN
         /* Otherwise, use original ones from tra_path. */
