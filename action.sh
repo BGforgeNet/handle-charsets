@@ -18,7 +18,7 @@ fi
 
 # we specifically want word splitting
 # shellcheck disable=SC2086
-./handle.py $args
+$GITHUB_ACTION_PATH/handle.py $args
 
 # now commit and push
 if [[ "$INPUT_COMMIT" != "true" ]]; then
