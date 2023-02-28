@@ -2,6 +2,8 @@
 
 To allow Github to display tra files with non-UTF-8 encoding correctly, you need to specify their encoding explicitly in `.gitattributes` file.
 
+It's optional and is not related to action in any way.
+
 An example:
 
 ```gitattributes

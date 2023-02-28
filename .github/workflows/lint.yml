@@ -17,6 +17,9 @@ jobs:
             ${{ runner.os }}-pip-
 
       - uses: actions/checkout@v3
+        with:
+          # Make sure the actual branch is checked out when running on pull requests
+          ref: ${{ github.head_ref }}
 
       - name: ShellCheck
         uses: ludeeus/action-shellcheck@master
@@ -35,3 +38,8 @@ jobs:
           checkName: 'lint'   # NOTE: this needs to be the same as the job name
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Prettify code
+        uses: creyD/prettier_action@v4.3
+        with:
+          prettier_options: --write **/*.md
