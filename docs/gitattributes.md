@@ -1,6 +1,6 @@
 ## Gitattributes
 
-For correct display of tra files with non-UTF-8 encoding, you need to specify their encoding explicitly in `.gitattributes` file.
+To allow Github to display tra files with non-UTF-8 encoding correctly, you need to specify their encoding explicitly in `.gitattributes` file.
 
 An example:
 
