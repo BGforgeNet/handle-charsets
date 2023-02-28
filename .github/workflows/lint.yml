@@ -1,0 +1,30 @@
+name: "Lint"
+
+on:
+  pull_request:
+  push:
+
+jobs:
+  lint:
+    name: lint
+    runs-on: ubuntu-latest
+    steps:
+
+      - uses: actions/checkout@v3
+
+      - name: ShellCheck
+        uses: ludeeus/action-shellcheck@master
+
+      - name: Pylint
+        run: |
+          pylint handle.py
+
+      - name: Black
+        uses: psf/black@stable
+
+      - name: Run mypy
+        uses: sasanquaneuf/mypy-github-action@releases/v1
+        with:
+          checkName: 'lint'   # NOTE: this needs to be the same as the job name
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
