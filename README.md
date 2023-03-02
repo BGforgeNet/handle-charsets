@@ -46,7 +46,7 @@ jobs:
 
 ### Differences from HANDLE_CHARSETS
 
-1. Less options. In particular, there's no noconvert/noreload arrays. Use `WITH_TRA`/`LOAD_TRA`/`USING` to scope your tra files to corresponding components.
+1. Less options. In particular, there's no (no)convert/(no)reload arrays. Use `WITH_TRA`/`LOAD_TRA`/`USING` to scope your tra files to corresponding components.
 2. Any file named `ee.tra` or matching `*_ee.tra` mask is inferred to be in UTF-8, even if the rest of the files are in Windows-specific encoding.
 3. Files named `setup.tra` or `install.tra` are inferred to be in Windows-specific encoding, even the rest of the files are in UTF-8.
 4. Files named `setup.tra` or `install.tra` in Russian or Ukrainian languages are inferred to be in `cp866` encoding, not `cp1251`. That's the correct console encoding in Windows in those languages.
