@@ -128,7 +128,7 @@ def get_win_encoding(language, file_path):
         encoding = CHARSET_MAP[language]
         return encoding
 
-    print(f"Failed to detect encoding for file {file_path} in language {language}")
+    print(f"Failed to infer encoding for file {file_path} in language {language}")
     sys.exit(1)
 
 
