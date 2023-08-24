@@ -65,8 +65,12 @@ CHARSET_MAP = {
     "uk_UA": "cp1251",
 }
 
+COMMENT_NO_MANUAL = (
+    "// Do not edit manually. This file is generated automatically by handle-charsets. Your changes will be lost.\n\n"
+)
 
-def resave_file(src_path, src_enc, dst_path, dst_enc, split_console=False):
+
+def resave_file(src_path, src_enc, dst_path, dst_enc):
     """
     Read source file with source encoding and save it to destination with another encoding
     """
@@ -84,12 +88,6 @@ def resave_file(src_path, src_enc, dst_path, dst_enc, split_console=False):
             os.remove(dst_dir)
             os.makedirs(dst_dir)
 
-    if split_console:
-        data = (
-            "// Do not edit manually. "
-            "This file is generated automatically by handle-charsets. "
-            "Your changes will be lost.\n\n" + data
-        )
     with open(dst_path, mode="w", encoding=dst_enc) as ofile:
         ofile.write(data)
 
@@ -212,10 +210,10 @@ def main():
 
         if args.split_console and filename in CONSOLE_FILES:
             console_out_file = get_os_path(tra_out_file, "win32")
-            resave_file(tra_file, src_encoding, console_out_file, dst_encoding, split_console=True)
+            resave_file(tra_file, src_encoding, console_out_file, dst_encoding)
             for weidu_os in ["unix", "osx"]:
                 console_out_file = get_os_path(tra_out_file, weidu_os)
-                resave_file(tra_file, src_encoding, console_out_file, "utf-8", split_console=True)
+                resave_file(tra_file, src_encoding, console_out_file, "utf-8")
         else:
             resave_file(tra_file, src_encoding, tra_out_file, dst_encoding)
 
