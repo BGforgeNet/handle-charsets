@@ -88,6 +88,7 @@ def resave_file(src_path, src_enc, dst_path, dst_enc):
             os.remove(dst_dir)
             os.makedirs(dst_dir)
 
+    data = COMMENT_NO_MANUAL + data
     with open(dst_path, mode="w", encoding=dst_enc) as ofile:
         ofile.write(data)
 
