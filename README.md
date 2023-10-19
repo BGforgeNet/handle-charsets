@@ -31,7 +31,6 @@ jobs:
           out_path: mymod/tra_ee
           from_utf8: false
           split_console: true
-          commit: true
 ```
 
 ### Options
