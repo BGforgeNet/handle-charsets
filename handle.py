@@ -66,7 +66,7 @@ CHARSET_MAP = {
 }
 
 COMMENT_NO_MANUAL = (
-    "// Do not edit manually. This file is generated automatically by handle-charsets. Your changes will be lost.\n\n"
+    "// Do not edit. This file is generated automatically by handle-charsets. Your changes will be lost.\n\n"
 )
 
 
