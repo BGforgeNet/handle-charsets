@@ -1,6 +1,6 @@
 ## Handle charsets
 
-This is a static alternative for WeiDU `HANDLE_CHARSETS` function. Static means that rather than converting tra files at install time on user machine, this action will generate and commit them into mod repository. It has similar options, but there are differences.
+This is a static alternative for WeiDU `HANDLE_CHARSETS` function. Static means that rather than converting tra files at install time on user machine, this action will generate and (optionally) commit them into mod repository. It has similar options, but there are differences.
 
 - [Action usage](#action-usage)
 - [Options](#options)
@@ -32,6 +32,8 @@ jobs:
           from_utf8: false
           split_console: true
 ```
+
+By default, the files will be pushed into the repository. Alternatively, you can disable `commit` and only run the action during packaging.
 
 ### Options
 
