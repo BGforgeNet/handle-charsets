@@ -22,7 +22,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Handle charsets
         uses: BGforgeNet/handle-charsets@master
@@ -33,7 +33,9 @@ jobs:
           split_console: true
 ```
 
-By default, the files will be pushed into the repository. Alternatively, you can disable `commit` and only run the action during packaging.
+By default, the files will be pushed into the repository.
+
+Alternatively, you can disable `commit` and only run the action during packaging. However, note that Project Infinity requires repository source code to match package contents.
 
 ### Options
 
