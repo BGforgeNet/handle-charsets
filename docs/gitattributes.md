@@ -22,6 +22,7 @@ mymod/tra/swedish/**.tra                working-tree-encoding=cp1252
 mymod/tra/schinese/**.tra               working-tree-encoding=cp936
 mymod/tra/tchinese/**.tra               working-tree-encoding=cp950
 mymod/tra/ukrainian/**.tra              working-tree-encoding=cp1251
+mymod/tra/vietnamese/**.tra             working-tree-encoding=cp1258
 
 # Classic or EE console, RU/UA
 mymod/**/russian/**/install.tra         working-tree-encoding=cp866
@@ -52,6 +53,7 @@ mymod/tra_ee/swedish/*-win32.tra        working-tree-encoding=cp1252
 mymod/tra_ee/schinese/*-win32.tra       working-tree-encoding=cp936
 mymod/tra_ee/tchinese/*-win32.tra       working-tree-encoding=cp950
 mymod/tra_ee/ukrainian/*-win32.tra      working-tree-encoding=cp866
+mymod/tra_ee/vietnamese/*-win32.tra     working-tree-encoding=cp1258
 ```
 
 After the file is created, tell git to re-read existing files:
