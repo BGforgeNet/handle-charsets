@@ -82,7 +82,7 @@ END
 
 /*
     Only console messages are loaded by default.
-    We use setup-%WEIDU_OS%.tra from out_path, because has correct console encoding.
+    We always use setup-%WEIDU_OS%.tra from out_path, because it has the correct console encoding.
 */
 LANGUAGE ~English~ ~english~ ~%MOD_FOLDER%/tra_ee/english/setup-%WEIDU_OS%.tra~
 LANGUAGE ~Russian~ ~russian~ ~%MOD_FOLDER%/tra_ee/russian/setup-%WEIDU_OS%.tra~
