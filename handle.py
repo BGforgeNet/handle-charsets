@@ -5,24 +5,27 @@ import os
 import sys
 
 parser = argparse.ArgumentParser(
-    description="Convert TRA files from Windows-specific encoding to UTF-8",
+    description="Convert TRA files from Windows-specific encoding to UTF-8 and back",
     formatter_class=argparse.ArgumentDefaultsHelpFormatter,
 )
 
 parser.add_argument("--tra-path", dest="tra_path", help="source tra directory path", required=True)
 parser.add_argument("--out-path", dest="out_path", help="directory path for converted files", required=True)
-parser.add_argument("--from-utf8", dest="from_utf8", help="reverse conversion", action="store_true", default=False)
+parser.add_argument(
+    "--from-utf8", dest="from_utf8", help="reverse conversion: from ANSI to UTF-8", action="store_true", default=False
+)
 parser.add_argument(
     "--split-console",
     dest="split_console",
     help="Generate separate console message files from setup.tra and install.tra."
-    "This will create setup-win32.tra, setup-unix.tra, etc for each OS with correct encoding.",
+    "This will create setup-win32.tra, setup-unix.tra, etc for each OS with ANSI encoding.",
     action="store_true",
     default=False,
 )
 args = parser.parse_args()
 
-# these files are assumed to be in system encoding always
+# If split_console is true, these files should be in ANSI encoding
+# Otherwise, in UTF-8
 CONSOLE_FILES = ["setup.tra", "install.tra"]
 
 CHARSET_MAP = {
@@ -144,7 +147,7 @@ def get_dst_encoding(language, file_path, from_utf8):
     return "utf-8"
 
 
-def get_src_encoding(language, file_path, from_utf8):
+def get_src_encoding(language: str, file_path: str, from_utf8: bool) -> str:
     """
     Return encoding to read the source file in
     """
@@ -154,7 +157,7 @@ def get_src_encoding(language, file_path, from_utf8):
     return get_win_encoding(language, file_path)
 
 
-def get_language(dirpath):
+def get_language(dirpath: str) -> str:
     """
     Gets language component from tra directory path
     """
