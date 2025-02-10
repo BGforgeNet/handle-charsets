@@ -145,8 +145,7 @@ def get_dst_encoding(language, file_path, from_utf8, split_console):
     if filename in CONSOLE_FILES:
         if split_console:
             return get_win_encoding(language, file_path)
-        else:
-            return "utf-8"
+        return "utf-8"
 
     if from_utf8:
         return get_win_encoding(language, file_path)
