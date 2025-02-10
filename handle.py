@@ -134,14 +134,21 @@ def get_win_encoding(language, file_path):
     sys.exit(1)
 
 
-def get_dst_encoding(language, file_path, from_utf8):
+def get_dst_encoding(language, file_path, from_utf8, split_console):
     """
     Return encoding to save the converted file in.
     """
 
-    # Console messages always should be in native encoding.
     filename = get_filename(file_path)
-    if from_utf8 or filename in CONSOLE_FILES:
+
+    # Console messages should be in UTF-8, unless we're splitting them.
+    if filename in CONSOLE_FILES:
+        if split_console:
+            return get_win_encoding(language, file_path)
+        else:
+            return "utf-8"
+
+    if from_utf8:
         return get_win_encoding(language, file_path)
 
     return "utf-8"
@@ -152,7 +159,12 @@ def get_src_encoding(language: str, file_path: str, from_utf8: bool) -> str:
     Return encoding to read the source file in
     """
     filename = get_filename(file_path)
-    if from_utf8 and filename not in CONSOLE_FILES:
+
+    # Source console messages are assumed to be in UTF-8 for new WeiDU.
+    if filename in CONSOLE_FILES:
+        return "utf-8"
+
+    if from_utf8:
         return "utf-8"
     return get_win_encoding(language, file_path)
 
@@ -208,7 +220,7 @@ def main():
         dirpath = get_dirpath(relpath)
         language = get_language(dirpath)
         src_encoding = get_src_encoding(language, tra_file, args.from_utf8)
-        dst_encoding = get_dst_encoding(language, tra_file, args.from_utf8)
+        dst_encoding = get_dst_encoding(language, tra_file, args.from_utf8, args.split_console)
         tra_out_file = os.path.join(args.out_path, relpath)
         filename = get_filename(relpath)
 
