@@ -14,15 +14,15 @@ inputs:
   from_utf8:
     description: Convert From UTF-8
     required: false
-    default: false
+    default: "false"
   split_console:
     description: Generate OS-specific files from setup.tra and install.tra
     required: false
-    default: false
+    default: "false"
   commit:
     description: Commit if changes are found
     required: false
-    default: false
+    default: "false"
 
 runs:
   using: "composite"
