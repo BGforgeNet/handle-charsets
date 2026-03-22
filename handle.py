@@ -4,68 +4,49 @@ import argparse
 import os
 import sys
 
-parser = argparse.ArgumentParser(
-    description="Convert TRA files from Windows-specific encoding to UTF-8 and back",
-    formatter_class=argparse.ArgumentDefaultsHelpFormatter,
-)
-
-parser.add_argument("--tra-path", dest="tra_path", help="source tra directory path", required=True)
-parser.add_argument("--out-path", dest="out_path", help="directory path for converted files", required=True)
-parser.add_argument(
-    "--from-utf8", dest="from_utf8", help="reverse conversion: from ANSI to UTF-8", action="store_true", default=False
-)
-parser.add_argument(
-    "--split-console",
-    dest="split_console",
-    help="Generate separate console message files from setup.tra and install.tra."
-    "This will create setup-win32.tra, setup-unix.tra, etc for each OS with ANSI encoding.",
-    action="store_true",
-    default=False,
-)
-args = parser.parse_args()
-
 # If split_console is true, these files should be in ANSI encoding
 # Otherwise, in UTF-8
 CONSOLE_FILES = ["setup.tra", "install.tra"]
 
+# Keys are lowercase to allow case-insensitive lookup.
 CHARSET_MAP = {
     "schinese": "cp936",
-    "zh_CN": "cp936",
+    "zh_cn": "cp936",
     "tchinese": "cp950",
     "czech": "cp1250",
-    "cs_CZ": "cp1250",
+    "cs_cz": "cp1250",
     "english": "cp1252",
     "american": "cp1252",
-    "en_US": "cp1252",
+    "en_us": "cp1252",
     "french": "cp1252",
     "francais": "cp1252",
-    "fr_FR": "cp1252",
+    "fr_fr": "cp1252",
     "german": "cp1252",
     "deutsch": "cp1252",
-    "de_DE": "cp1252",
+    "de_de": "cp1252",
     "italian": "cp1252",
     "italiano": "cp1252",
-    "it_IT": "cp1252",
+    "it_it": "cp1252",
     "japanese": "cp932",
-    "ja_JP": "cp932",
+    "ja_jp": "cp932",
     "korean": "cp932",
-    "ko_KR": "cp932",
+    "ko_kr": "cp932",
     "polish": "cp1250",
     "polski": "cp1250",
-    "pl_PL": "cp1250",
+    "pl_pl": "cp1250",
     "portuguese": "cp1252",
-    "pt_BR": "cp1252",
+    "pt_br": "cp1252",
     "russian": "cp1251",
-    "ru_RU": "cp1251",
+    "ru_ru": "cp1251",
     "spanish": "cp1252",
     "castilian": "cp1252",
     "espanol": "cp1252",
     "castellano": "cp1252",
-    "es_ES": "cp1252",
+    "es_es": "cp1252",
     "swedish": "cp1252",
-    "sw_SE": "cp1252",
+    "sw_se": "cp1252",
     "ukrainian": "cp1251",
-    "uk_UA": "cp1251",
+    "uk_ua": "cp1251",
 }
 
 COMMENT_NO_MANUAL = (
@@ -73,10 +54,8 @@ COMMENT_NO_MANUAL = (
 )
 
 
-def resave_file(src_path, src_enc, dst_path, dst_enc):
-    """
-    Read source file with source encoding and save it to destination with another encoding
-    """
+def resave_file(src_path: str, src_enc: str, dst_path: str, dst_enc: str) -> None:
+    """Read source file with source encoding and save it to destination with another encoding."""
     print(f"{src_path}, {src_enc}\t=>\t{dst_path}, {dst_enc}")
 
     with open(src_path, encoding=src_enc) as ifile:
@@ -84,61 +63,50 @@ def resave_file(src_path, src_enc, dst_path, dst_enc):
 
     # prepare directory
     dst_dir = os.path.dirname(dst_path)
-    if not os.path.exists(dst_dir):
+    if dst_dir and not os.path.exists(dst_dir):
         os.makedirs(dst_dir)
-    else:
-        if not os.path.isdir(dst_dir):
-            os.remove(dst_dir)
-            os.makedirs(dst_dir)
+    elif dst_dir and not os.path.isdir(dst_dir):
+        os.remove(dst_dir)
+        os.makedirs(dst_dir)
 
     data = COMMENT_NO_MANUAL + data
     with open(dst_path, mode="w", encoding=dst_enc) as ofile:
         ofile.write(data)
 
 
-def find_files(path, ext):
-    """
-    @path: directory path
-    @ext: file extension
-
-    Returns a list of files with this extensions
-    """
+def find_files(path: str, ext: str) -> list[str]:
+    """Return a sorted list of files under path matching the given extension."""
+    ext_lower = ext.lower()
     flist = []
     for root, _dirs, files in os.walk(path, followlinks=True):
         for fname in files:
-            if fname.lower().endswith(ext.lower()):
+            if fname.lower().endswith(ext_lower):
                 flist.append(os.path.join(root, fname))
-    flist = sorted(flist)
-    return flist
+    return sorted(flist)
 
 
-def get_win_encoding(language, file_path):
+def get_win_encoding(language: str, file_path: str) -> str:
+    """Determine the Windows-specific encoding for the file.
+
+    Raises ValueError for unknown languages.
     """
-    Determines windows-specific encoding for the file
-    """
-    if "_" not in language:
-        language = language.lower()
-
+    language = language.lower()
     filename = get_filename(file_path)
-    if filename in CONSOLE_FILES and language in ["russian", "ukrainian", "ru_RU", "uk_UA"]:
+
+    if filename in CONSOLE_FILES and language in ("russian", "ukrainian", "ru_ru", "uk_ua"):
         return "cp866"
 
     if filename == "ee.tra" or filename.endswith("_ee.tra"):
         return "utf-8"
 
     if language in CHARSET_MAP:
-        encoding = CHARSET_MAP[language]
-        return encoding
+        return CHARSET_MAP[language]
 
-    print(f"Failed to infer encoding for file {file_path} in language {language}")
-    sys.exit(1)
+    raise ValueError(f"Failed to infer encoding for file {file_path} in language {language}")
 
 
-def get_dst_encoding(language, file_path, from_utf8, split_console):
-    """
-    Return encoding to save the converted file in.
-    """
-
+def get_dst_encoding(language: str, file_path: str, from_utf8: bool, split_console: bool) -> str:
+    """Return the encoding to save the converted file in."""
     filename = get_filename(file_path)
 
     # Console messages should be in UTF-8, unless we're splitting them.
@@ -154,9 +122,7 @@ def get_dst_encoding(language, file_path, from_utf8, split_console):
 
 
 def get_src_encoding(language: str, file_path: str, from_utf8: bool) -> str:
-    """
-    Return encoding to read the source file in
-    """
+    """Return the encoding to read the source file in."""
     filename = get_filename(file_path)
 
     # Source console messages are assumed to be in UTF-8 for new WeiDU.
@@ -169,57 +135,73 @@ def get_src_encoding(language: str, file_path: str, from_utf8: bool) -> str:
 
 
 def get_language(dirpath: str) -> str:
-    """
-    Gets language component from tra directory path
-    """
+    """Extract the language component from a tra directory path."""
     return dirpath.split(os.path.sep)[0]
 
 
-def get_relpath(tra_file, tra_path):
-    """
-    Returns tra_file's path relative to tra_path
-    """
-    relpath = os.path.relpath(tra_file, start=tra_path)
-    return relpath
+def get_relpath(tra_file: str, tra_path: str) -> str:
+    """Return tra_file's path relative to tra_path."""
+    return os.path.relpath(tra_file, start=tra_path)
 
 
-def get_dirpath(tra_relpath):
-    """
-    Returns tra_file's directory component relative to tra_path
-    """
-    dirpath = os.path.dirname(tra_relpath)
-    return dirpath
+def get_dirpath(tra_relpath: str) -> str:
+    """Return the directory component of a relative tra path."""
+    return os.path.dirname(tra_relpath)
 
 
-def get_filename(filepath):
-    """
-    Returns lowecased basename
-    """
+def get_filename(filepath: str) -> str:
+    """Return the lowercased basename of a path."""
     return os.path.basename(filepath).lower()
 
 
-def get_os_path(relpath, weidu_os):
-    """
-    Takes relative console tra file path, returns OS-specific file path for it:
-    tra/setup.tra -> tra/setup-win32.tra
+def get_os_path(relpath: str, weidu_os: str) -> str:
+    """Return the OS-specific file path for a console tra file.
+
+    Example: tra/setup.tra + win32 -> tra/setup-win32.tra
     """
     dirname = get_dirpath(relpath)
     filename = get_filename(relpath)
     base, ext = os.path.splitext(filename)
     filename = f"{base}-{weidu_os}{ext}"
-    os_path = os.path.join(dirname, filename)
-    return os_path
+    return os.path.join(dirname, filename)
 
 
-def main():
-    """Main function"""
+def main() -> None:
+    """Parse arguments and convert TRA files."""
+    parser = argparse.ArgumentParser(
+        description="Convert TRA files from Windows-specific encoding to UTF-8 and back",
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter,
+    )
+    parser.add_argument("--tra-path", dest="tra_path", help="source tra directory path", required=True)
+    parser.add_argument("--out-path", dest="out_path", help="directory path for converted files", required=True)
+    parser.add_argument(
+        "--from-utf8",
+        dest="from_utf8",
+        help="reverse conversion: from ANSI to UTF-8",
+        action="store_true",
+        default=False,
+    )
+    parser.add_argument(
+        "--split-console",
+        dest="split_console",
+        help="Generate separate console message files from setup.tra and install.tra."
+        "This will create setup-win32.tra, setup-unix.tra, etc for each OS with ANSI encoding.",
+        action="store_true",
+        default=False,
+    )
+    args = parser.parse_args()
+
     tra_files = find_files(args.tra_path, "tra")
     for tra_file in tra_files:
         relpath = get_relpath(tra_file, args.tra_path)
         dirpath = get_dirpath(relpath)
         language = get_language(dirpath)
-        src_encoding = get_src_encoding(language, tra_file, args.from_utf8)
-        dst_encoding = get_dst_encoding(language, tra_file, args.from_utf8, args.split_console)
+        try:
+            src_encoding = get_src_encoding(language, tra_file, args.from_utf8)
+            dst_encoding = get_dst_encoding(language, tra_file, args.from_utf8, args.split_console)
+        except ValueError as exc:
+            print(exc)
+            sys.exit(1)
         tra_out_file = os.path.join(args.out_path, relpath)
         filename = get_filename(relpath)
 

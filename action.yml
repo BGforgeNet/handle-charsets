@@ -22,7 +22,7 @@ inputs:
   commit:
     description: Commit if changes are found
     required: false
-    default: "false"
+    default: "true"
 
 runs:
   using: "composite"
