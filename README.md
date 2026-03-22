@@ -41,19 +41,19 @@ requires repository source code to match package contents.
 
 ### Options
 
-| name            | default | description                                                                                   |
+| name | default | description |
 | --------------- | ------- | --------------------------------------------------------------------------------------------- |
-| `tra_path`      |         | Source tra directory, same as in `HANDLE_CHARSETS`.                                           |
-| `out_path`      |         | Converted tra directory, same as in `HANDLE_CHARSETS`.                                        |
-| `from_utf8`     | `false` | Assume that source files are in UTF-8, make reverse conversion, same as in `HANDLE_CHARSETS`. |
-| `commit`        | `true`  | Commit and push the changes.                                                                  |
-| `split_console` | `false` | Deprecated. Generate OS-specific files for console messages, see below.                       |
+| `tra_path` | | Source tra directory, same as in `HANDLE_CHARSETS`. |
+| `out_path` | | Converted tra directory, same as in `HANDLE_CHARSETS`. |
+| `from_utf8` | `false` | Assume that source files are in UTF-8, make reverse conversion, same as in `HANDLE_CHARSETS`. |
+| `commit` | `true` | Commit and push the changes. |
+| `split_console` | `false` | Deprecated. Generate OS-specific files for console messages, see below. |
 
 ### Differences from HANDLE_CHARSETS
 
 1. Less options. In particular, there's no (no)convert/(no)reload arrays. Use `WITH_TRA`/`LOAD_TRA`/`USING` to scope
    your tra files to corresponding components.
-2. Any file named `ee.tra` or matching `*_ee.tra` mask is inferred to be in UTF-8, even if the rest of the files are in
+1. Any file named `ee.tra` or matching `*_ee.tra` mask is inferred to be in UTF-8, even if the rest of the files are in
    Windows-specific encoding.
 
 #### Console encodings

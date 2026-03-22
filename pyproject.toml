@@ -1,8 +1,21 @@
-[tool.pylint.'MESSAGES CONTROL']
-disable = "missing-module-docstring"
+[project]
+name = "handle-charsets"
+version = "0.1.0"
+description = "Convert WeiDU TRA files between Windows-specific encodings and UTF-8"
+requires-python = ">=3.10"
 
-[tool.black]
+[dependency-groups]
+dev = [
+    "mdformat>=1.0.0",
+    "ruff>=0.8.0",
+    "ty>=0.0.0a1",
+]
+
+[tool.ruff]
 line-length = 120
 
-[tool.pylint]
-max-line-length = 120
+[tool.ruff.lint]
+select = ["E", "F", "I", "N", "UP", "B", "SIM", "RUF"]
+
+[tool.ruff.format]
+indent-style = "space"

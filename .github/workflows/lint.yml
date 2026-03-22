@@ -9,37 +9,28 @@ jobs:
     name: lint
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/cache@v3
-        with:
-          path: ~/.cache/pip
-          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}-${{ hashFiles('**/requirements-dev.txt') }}
-          restore-keys: |
-            ${{ runner.os }}-pip-
-
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v6
         with:
           # Make sure the actual branch is checked out when running on pull requests
           ref: ${{ github.head_ref }}
 
       - name: ShellCheck
-        uses: ludeeus/action-shellcheck@master
+        uses: ludeeus/action-shellcheck@2.0.0
 
-      - name: Pylint
-        run: |
-          pip install -r requirements-dev.txt
-          pylint handle.py
+      - name: Install uv
+        uses: astral-sh/setup-uv@v7
 
-      - name: Black
-        uses: psf/black@stable
+      - name: Install dev dependencies
+        run: uv sync --group dev
 
-      - name: Run mypy
-        uses: sasanquaneuf/mypy-github-action@releases/v1
-        with:
-          checkName: "lint" # NOTE: this needs to be the same as the job name
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Ruff lint
+        run: uv run ruff check handle.py
 
-      - name: Prettify code
-        uses: creyD/prettier_action@v4.3
-        with:
-          prettier_options: --write **/*.md
+      - name: Ruff format
+        run: uv run ruff format --check handle.py
+
+      - name: ty type check
+        run: uv run ty check handle.py
+
+      - name: Markdown format check
+        run: uv run mdformat --check .

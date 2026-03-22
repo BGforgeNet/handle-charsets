@@ -104,7 +104,7 @@ def find_files(path, ext):
     Returns a list of files with this extensions
     """
     flist = []
-    for root, dirs, files in os.walk(path, followlinks=True):  # pylint: disable=unused-variable
+    for root, _dirs, files in os.walk(path, followlinks=True):
         for fname in files:
             if fname.lower().endswith(ext.lower()):
                 flist.append(os.path.join(root, fname))
